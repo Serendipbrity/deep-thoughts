@@ -5,15 +5,19 @@ const { ApolloServer } = require('apollo-server-express');
 // import typeDefs/resolvers
 const { typeDefs, resolvers } = require('./schemas');
 
+// import middleware
+const { authMiddleware } = require('./utils/auth');
+
 // import connection to database
 const db = require('./config/connection');
 
 const PORT = process.env.PORT || 3001;
-
+const path = require('path');
 // create a new Apollo server and pass it in our schema data
 const server = new ApolloServer({
   typeDefs,
-  resolvers
+  resolvers,
+  context: authMiddleware
 });
 
 const app = express();
@@ -27,6 +31,14 @@ const startApolloServer = async (typeDefs, resolvers) => {
   // integrate our Apollo server with the Express application as middleware
   server.applyMiddleware({ app });
 
+// Serve up statis assets
+  if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../client/build')));
+  }
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+  });
 
   // listen for connection then start server
   db.once('open', () => {
