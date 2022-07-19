@@ -3,11 +3,11 @@
 const mongoose = require('mongoose');
 
 // mongoose.connection object
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/deep-thoughts', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/deep-thoughts', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false
+  // useCreateIndex: true,
+  // useFindAndModify: false
 });
 
 // mongoose.connection object exported
