@@ -13,7 +13,6 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true,
-      // a type of validation that allows us to use regex to test input value
       match: [/.+@.+\..+/, 'Must match an email address!']
     },
     password: {
@@ -42,8 +41,7 @@ const userSchema = new Schema(
 );
 
 // set up pre-save middleware to create password
-userSchema.pre('save', async function (next) {
-  // check if password data is new /been modified (this way we can use the same middleware for both cases)
+userSchema.pre('save', async function(next) {
   if (this.isNew || this.isModified('password')) {
     const saltRounds = 10;
     this.password = await bcrypt.hash(this.password, saltRounds);
